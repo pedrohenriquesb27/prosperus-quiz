@@ -109,6 +109,29 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // ENDPOINT DE RASTREAMENTO DE VISITAS (POST /api/track-visit)
+  if (reqUrl.startsWith('/api/track-visit')) {
+    if (req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => body += chunk.toString());
+      req.on('end', () => {
+        try {
+          const visitData = JSON.parse(body || '{}');
+          console.log('📊 [PROSPERUS VISIT TRACKED]:', visitData);
+          res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+          res.end(JSON.stringify({ status: 'ok', tracked: true, data: visitData }));
+        } catch (err) {
+          res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+          res.end(JSON.stringify({ status: 'error', tracked: false, message: err.message }));
+        }
+      });
+      return;
+    }
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    res.end(JSON.stringify({ status: 'ok', service: 'Prosperus Track Visit API' }));
+    return;
+  }
+
   // SERVIDOR DE ARQUIVOS ESTÁTICOS
   let cleanPath = reqUrl.split('?')[0];
   let reqPath = cleanPath === '/' ? '/index.html' : cleanPath;

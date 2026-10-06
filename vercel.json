@@ -5,7 +5,7 @@
       "src": "server.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["index.html", "admin.html", "supabaseConfig.js", "logo-prosperus.jpg"]
+        "includeFiles": ["index.html", "admin.html", "supabaseConfig.js", "logo-prosperus.jpg", "api/track-visit.js", "api/leads.js"]
       }
     }
   ],

@@ -5,6 +5,74 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Prosperus Inteligência Financeira | Check-up de Crédito</title>
 
+  <!-- Meta Pixel Code -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1107957032177054');
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1107957032177054&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
+
+  <!-- Script de Rastreamento de Visitas e UTMs -->
+  <script>
+    (function() {
+      function getUrlParams() {
+        const params = new URLSearchParams(window.location.search);
+        const result = {};
+        for (const [key, value] of params.entries()) {
+          result[key] = value;
+        }
+        return result;
+      }
+
+      function trackVisit() {
+        const urlParams = getUrlParams();
+        const payload = {
+          timestamp: new Date().toISOString(),
+          url: window.location.href,
+          referrer: document.referrer || '',
+          path: window.location.pathname,
+          queryParams: urlParams,
+          utm_source: urlParams.utm_source || '',
+          utm_medium: urlParams.utm_medium || '',
+          utm_campaign: urlParams.utm_campaign || '',
+          utm_content: urlParams.utm_content || '',
+          utm_term: urlParams.utm_term || '',
+          src: urlParams.src || '',
+          sck: urlParams.sck || '',
+          vid: urlParams.vid || ''
+        };
+
+        try {
+          fetch('/api/track-visit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            keepalive: true
+          }).catch(function(err) {
+            console.warn('⚠️ Track visit error:', err);
+          });
+        } catch(e) {}
+      }
+
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        trackVisit();
+      } else {
+        document.addEventListener('DOMContentLoaded', trackVisit);
+      }
+    })();
+  </script>
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
@@ -634,7 +702,7 @@
 
         <!-- Botão de Ação -->
         <div class="pt-2">
-          <a href="#sales-section" onclick="document.getElementById('sales-section').scrollIntoView({ behavior: 'smooth' }); return false;" class="w-full py-4.5 px-6 bg-gradient-to-r from-prosperus-green via-[#083C2A] to-prosperus-green hover:from-prosperus-greenHover hover:to-prosperus-green text-white font-black text-lg sm:text-xl rounded-2xl shadow-cta-gold border-2 border-prosperus-gold transform hover:-translate-y-1 transition duration-200 flex items-center justify-center gap-3 block cursor-pointer text-center">
+          <a href="#sales-section" onclick="document.getElementById('sales-section').scrollIntoView({ behavior: 'smooth' }); return false;" class="btn-checkout w-full py-4.5 px-6 bg-gradient-to-r from-prosperus-green via-[#083C2A] to-prosperus-green hover:from-prosperus-greenHover hover:to-prosperus-green text-white font-black text-lg sm:text-xl rounded-2xl shadow-cta-gold border-2 border-prosperus-gold transform hover:-translate-y-1 transition duration-200 flex items-center justify-center gap-3 block cursor-pointer text-center">
             <span>OBTER MEU CHECK-UP FINANCEIRO COMPLETO</span>
             <svg class="w-6 h-6 text-prosperus-goldBright shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
           </a>
@@ -729,7 +797,7 @@
           </div>
 
           <div>
-            <a id="checkout-btn" href="https://payfast.greenn.com.br/27s9n8q?b_id_1=9ujy5kr&src=251fe2fa6aca41a0a33fd893ea936f29&sck=251fe2fa6aca41a0a33fd893ea936f29&vid=251fe2fa6aca41a0a33fd893ea936f29" target="_blank" class="w-full py-5 px-6 bg-gradient-to-r from-prosperus-green via-[#083C2A] to-prosperus-green hover:from-prosperus-greenHover hover:to-prosperus-green text-white font-black text-xl rounded-2xl shadow-cta-gold border-2 border-prosperus-gold transform hover:-translate-y-1 transition duration-200 flex items-center justify-center gap-2 block cursor-pointer">
+            <a id="checkout-btn" href="https://payfast.greenn.com.br/27s9n8q?b_id_1=9ujy5kr&src=251fe2fa6aca41a0a33fd893ea936f29&sck=251fe2fa6aca41a0a33fd893ea936f29&vid=251fe2fa6aca41a0a33fd893ea936f29" target="_blank" class="btn-checkout w-full py-5 px-6 bg-gradient-to-r from-prosperus-green via-[#083C2A] to-prosperus-green hover:from-prosperus-greenHover hover:to-prosperus-green text-white font-black text-xl rounded-2xl shadow-cta-gold border-2 border-prosperus-gold transform hover:-translate-y-1 transition duration-200 flex items-center justify-center gap-2 block cursor-pointer">
               <span>GARANTIR MEU CHECK-UP AGORA</span>
               <svg class="w-6 h-6 text-prosperus-goldBright" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
             </a>
@@ -790,7 +858,7 @@
               <span class="text-prosperus-gold group-open:rotate-180 transition font-black text-base">+</span>
             </summary>
             <p class="text-xs text-prosperus-bodyText font-bold mt-3 leading-relaxed">
-              O acesso é liberado instantaneamente no seu e-mail e no WhatsApp assim que o pagamento de R$ 99,00 for confirmed.
+              O acesso é liberado instantaneamente no seu e-mail e no WhatsApp assim que o pagamento de R$ 99,00 for confirmado.
             </p>
           </details>
 
@@ -1085,6 +1153,91 @@
         salesSection.classList.remove("hidden");
       }
     }
+
+    function startCountdownTimer() {
+      let duration = 9 * 60 + 59;
+      const timerElement = document.getElementById("countdown-timer");
+
+      setInterval(() => {
+        let minutes = parseInt(duration / 60, 10);
+        let seconds = parseInt(duration % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        if (timerElement) {
+          timerElement.textContent = minutes + ":" + seconds;
+        }
+
+        if (--duration < 0) {
+          duration = 5 * 60;
+        }
+      }, 1000);
+    }
+
+    function handleWhatsappSubmit(event) {
+      event.preventDefault();
+      const name = document.getElementById("wsp-name").value || userAnswers.nome;
+      const phone = document.getElementById("wsp-phone").value || userAnswers.whatsapp;
+
+      const defaultMsg = CONFIG.WHATSAPP_MESSAGE_DEFAULT;
+      const textMessage = `Olá! Meu nome é ${name} (${phone}). Renda: ${userAnswers.renda || 'Não informada'}. ${defaultMsg}`;
+
+      const encodedText = encodeURIComponent(textMessage);
+      const whatsappUrl = `https://api.whatsapp.com/send?phone=${CONFIG.WHATSAPP_NUMBER}&text=${encodedText}`;
+
+      window.open(whatsappUrl, "_blank");
+    }
+  </script>
+
+  <!-- Script de Injeção Dinâmica de UTMs e vid no Checkout -->
+  <script>
+    (function() {
+      function injectUTMsToCheckout() {
+        const currentParams = new URLSearchParams(window.location.search);
+        if (!currentParams.toString()) return;
+
+        const checkoutSelectors = [
+          '.btn-checkout',
+          '#checkout-btn',
+          'a[href*="greenn.com.br"]',
+          'a[href*="payfast.greenn"]'
+        ];
+        
+        const checkoutElements = document.querySelectorAll(checkoutSelectors.join(','));
+
+        checkoutElements.forEach(function(el) {
+          let rawHref = el.getAttribute('href');
+          if (!rawHref) return;
+
+          try {
+            const urlObj = new URL(rawHref, window.location.origin);
+            
+            // Repassa todos os parâmetros UTM e de rastreamento da URL atual para o link do checkout
+            currentParams.forEach(function(value, key) {
+              if (value && value.trim() !== '') {
+                urlObj.searchParams.set(key, value);
+              }
+            });
+
+            // Garante prioridade para vid, src e sck caso estejam na URL
+            if (currentParams.has('vid')) urlObj.searchParams.set('vid', currentParams.get('vid'));
+            if (currentParams.has('src')) urlObj.searchParams.set('src', currentParams.get('src'));
+            if (currentParams.has('sck')) urlObj.searchParams.set('sck', currentParams.get('sck'));
+
+            el.setAttribute('href', urlObj.toString());
+          } catch(e) {
+            console.warn('⚠️ Erro ao injetar UTMs no botão de checkout:', e);
+          }
+        });
+      }
+
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        injectUTMsToCheckout();
+      } else {
+        document.addEventListener('DOMContentLoaded', injectUTMsToCheckout);
+      }
+    })();
   </script>
 </body>
 </html>
