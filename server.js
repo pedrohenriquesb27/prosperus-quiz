@@ -20,14 +20,22 @@ const MIME_TYPES = {
 
 const CSV_HEADERS = '"Data e Hora";"Nome Completo";"WhatsApp";"Faixa de Renda";"Capacidade Mensal de Pagamento";"Acompanha CPF/Score?";"Quantidade de Bancos";"CPF/CNPJ";"Página de Origem"\n';
 
-// Inicializa o arquivo CSV se não existir
-if (!fs.existsSync(CSV_FILE)) {
-  fs.writeFileSync(CSV_FILE, '\uFEFF' + CSV_HEADERS, 'utf8');
+// Inicializa o arquivo CSV se não existir (ignora erros em ambientes read-only como Vercel)
+try {
+  if (!fs.existsSync(CSV_FILE)) {
+    fs.writeFileSync(CSV_FILE, '\uFEFF' + CSV_HEADERS, 'utf8');
+  }
+} catch (err) {
+  console.warn('⚠️ FS Write warning (CSV_FILE):', err.message);
 }
 
 // Inicializa o arquivo JSON se não existir
-if (!fs.existsSync(JSON_FILE)) {
-  fs.writeFileSync(JSON_FILE, '[]', 'utf8');
+try {
+  if (!fs.existsSync(JSON_FILE)) {
+    fs.writeFileSync(JSON_FILE, '[]', 'utf8');
+  }
+} catch (err) {
+  console.warn('⚠️ FS Write warning (JSON_FILE):', err.message);
 }
 
 const server = http.createServer((req, res) => {
@@ -61,7 +69,7 @@ const server = http.createServer((req, res) => {
         const url = (lead.origem_url || '').replace(/;/g, ',');
 
         const csvLine = `"${timestamp}";"${nome}";"${whatsapp}";"${renda}";"${capacidade}";"${cpf}";"${bancos}";"${cpfCnpj}";"${url}"\n`;
-        fs.appendFileSync(CSV_FILE, csvLine, 'utf8');
+        try { fs.appendFileSync(CSV_FILE, csvLine, 'utf8'); } catch (e) {}
 
         let leadsArr = [];
         try {
@@ -69,7 +77,7 @@ const server = http.createServer((req, res) => {
         } catch(e) { leadsArr = []; }
         
         leadsArr.push(lead);
-        fs.writeFileSync(JSON_FILE, JSON.stringify(leadsArr, null, 2), 'utf8');
+        try { fs.writeFileSync(JSON_FILE, JSON.stringify(leadsArr, null, 2), 'utf8'); } catch (e) {}
 
         console.log(`📌 [NOVO LEAD CAPTURADO]: ${nome} - ${whatsapp}`);
 
@@ -87,13 +95,15 @@ const server = http.createServer((req, res) => {
   // ENDPOINT DE LEITURA DE LEADS (GET /api/leads ou /api/leads?format=csv)
   if (reqUrl.startsWith('/api/leads') && req.method === 'GET') {
     if (reqUrl.includes('format=csv')) {
-      const csvData = fs.readFileSync(CSV_FILE, 'utf8');
+      let csvData = CSV_HEADERS;
+      try { csvData = fs.readFileSync(CSV_FILE, 'utf8'); } catch (e) {}
       res.writeHead(200, { 'Content-Type': 'text/csv; charset=utf-8' });
       res.end(csvData);
       return;
     }
 
-    const leadsData = fs.readFileSync(JSON_FILE, 'utf8');
+    let leadsData = '[]';
+    try { leadsData = fs.readFileSync(JSON_FILE, 'utf8'); } catch (e) {}
     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     res.end(leadsData);
     return;
