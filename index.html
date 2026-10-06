@@ -238,7 +238,7 @@
 
           <!-- Barra Visual de Progresso -->
           <div class="w-full bg-prosperus-bg h-4 rounded-full overflow-hidden p-1 border-2 border-prosperus-border">
-            <div id="progress-bar" class="bg-gradient-to-r from-prosperus-green via-emerald-700 to-prosperus-gold h-full rounded-full transition-all duration-500 ease-out shadow-inner" style="width: 14.3%;"></div>
+            <div id="progress-bar" class="bg-gradient-to-r from-prosperus-green via-emerald-700 to-prosperus-gold h-full rounded-full transition-all duration-500 ease-out shadow-inner" style="width: 14%;"></div>
           </div>
 
           <div class="mt-3 flex items-center justify-between text-xs font-bold text-prosperus-bodyText">
@@ -478,15 +478,15 @@
                 <svg class="w-6 h-6 text-prosperus-gold group-hover:translate-x-1 transition shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
               </button>
 
-              <button onclick="selectChoiceOption(6, 'relacionamento_bancario', 'Mais de 3 instituições')" class="w-full text-left p-5 rounded-2xl bg-[#FFFFFF] border-2 border-[#DEDACF] hover:border-[#C59B27] hover:bg-[#F7F2E4]/30 hover:shadow-lg transition-all duration-200 flex items-center justify-between group cursor-pointer">
+              <button onclick="selectChoiceOption(6, 'relacionamento_bancario', 'Mais de 3 instituições')" class="w-full text-left p-5 rounded-2xl bg-white border-2 border-prosperus-border hover:border-prosperus-gold hover:bg-prosperus-goldLight/30 hover:shadow-lg transition-all duration-200 flex items-center justify-between group cursor-pointer">
                 <div class="flex items-center gap-4">
-                  <div class="w-7 h-7 rounded-full border-2 border-[#062E20]/40 group-hover:border-[#C59B27] group-hover:bg-[#C59B27] flex items-center justify-center shrink-0 transition">
+                  <div class="w-7 h-7 rounded-full border-2 border-prosperus-green/40 group-hover:border-prosperus-gold group-hover:bg-prosperus-gold flex items-center justify-center shrink-0 transition">
                     <span class="w-2.5 h-2.5 rounded-full bg-white opacity-0 group-hover:opacity-100 transition"></span>
                   </div>
-                  <span class="w-8 h-8 rounded-xl bg-[#F5F3EF] text-[#0A1910] font-black flex items-center justify-center text-sm border border-[#DEDACF] shrink-0">C</span>
-                  <span class="text-base sm:text-lg text-[#0A1910] font-bold group-hover:text-[#062E20]">Mais de 3 instituições</span>
+                  <span class="w-8 h-8 rounded-xl bg-prosperus-bg text-prosperus-darkText font-black flex items-center justify-center text-sm border border-prosperus-border shrink-0">C</span>
+                  <span class="text-base sm:text-lg text-prosperus-darkText font-bold group-hover:text-prosperus-green">Mais de 3 instituições</span>
                 </div>
-                <svg class="w-6 h-6 text-[#C59B27] group-hover:translate-x-1 transition shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                <svg class="w-6 h-6 text-prosperus-gold group-hover:translate-x-1 transition shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
               </button>
             </div>
           </div>
@@ -582,35 +582,62 @@
           </div>
           <div>
             <span class="text-xs font-black text-red-800 uppercase tracking-widest block">DIAGNÓSTICO CONCLUÍDO</span>
-            <h2 class="text-lg sm:text-2xl font-black text-prosperus-darkText">Inconsistência de Rating Detectada</h2>
+            <h2 class="text-lg sm:text-2xl font-black text-prosperus-darkText">Identificamos que o seu perfil pode estar sofrendo com 2 travas principais:</h2>
           </div>
         </div>
 
-        <div class="bg-red-50 border-2 border-red-200 p-5 rounded-2xl mb-6">
-          <p class="text-xs sm:text-sm font-bold text-red-950 leading-relaxed">
-            Atenção <strong id="diagnosis-user-name" class="underline">Prezado Cliente</strong>: Identificamos que o seu perfil financeiro possui divergências no Registrato/SCR do Banco Central. Isso faz com que os sistemas automatizados dos bancos classifiquem seu perfil no <strong class="bg-red-200 px-1 py-0.5 rounded text-red-900 font-black">Rating CCC ou B- (Risco Elevado)</strong>, travando a aprovação de cartões de crédito de alto limite e empréstimos com taxa reduzida.
-          </p>
+        <p class="text-prosperus-bodyText text-base mb-6 leading-relaxed font-bold">
+          Com base nas suas respostas, <span id="diagnosis-user-name" class="font-black text-prosperus-darkText">você</span> se enquadra no grupo de pagadores pontuais que continuam bloqueados pelos algoritmos bancários devido a <strong class="text-prosperus-darkText font-black bg-red-50 px-2 py-0.5 rounded border border-red-200">restrições internas ocultas</strong>.
+        </p>
+
+        <!-- As 2 Explicações Detalhadas -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 my-6">
+          
+          <!-- Explicação 1: Rating Bancário -->
+          <div class="bg-prosperus-bg border-2 border-prosperus-border p-6 rounded-2xl space-y-3 relative">
+            <div class="flex justify-between items-start">
+              <span class="text-xs font-black bg-amber-100 text-amber-900 border border-amber-400 px-3 py-1 rounded-md">Rating Bancário</span>
+              <svg class="w-6 h-6 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <h4 class="text-base sm:text-lg font-black text-prosperus-darkText">Rating Bancário</h4>
+            <p class="text-xs sm:text-sm text-prosperus-bodyText leading-relaxed font-bold">
+              O <strong>Rating Bancário</strong> é a nota interna de risco (variando de AAA a CCC) que cada instituição financeira atribui de forma invisível ao CPF/CNPJ do cliente, determinando se ele terá acesso a juros justos ou se sofrerá recusas automáticas da mesa de crédito.
+            </p>
+          </div>
+
+          <!-- Explicação 2: Intervenção ou Análise BACEN -->
+          <div class="bg-prosperus-bg border-2 border-prosperus-border p-6 rounded-2xl space-y-3 relative">
+            <div class="flex justify-between items-start">
+              <span class="text-xs font-black bg-red-100 text-red-900 border border-red-400 px-3 py-1 rounded-md">Intervenção BACEN</span>
+              <svg class="w-6 h-6 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <h4 class="text-base sm:text-lg font-black text-prosperus-darkText">Intervenção ou Análise BACEN</h4>
+            <p class="text-xs sm:text-sm text-prosperus-bodyText leading-relaxed font-bold">
+              A <strong>Intervenção ou Análise BACEN</strong> é focada em identificar e corrigir divergências, registros incorretos ou travas sistêmicas no Registrato/SCR do Banco Central que bloqueiam o histórico financeiro do cliente perante os bancos.
+            </p>
+          </div>
+
         </div>
 
-        <!-- GRAFICO DE RATING ILUSTRATIVO -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 my-6">
-          <div class="bg-prosperus-bg p-4 rounded-2xl border-2 border-prosperus-border text-center">
-            <div class="text-xs font-bold text-prosperus-bodyText">Seu Rating Atual Estimado</div>
-            <div class="text-2xl font-black text-red-600 mt-1">CCC (Baixo)</div>
-            <div class="text-[10px] text-red-700 font-bold mt-0.5">Recusa Automática de Crédito</div>
+        <!-- Aviso de Prévia (Call-out / Box de Alerta) -->
+        <div class="bg-amber-50 border-2 border-amber-400/80 p-5 sm:p-6 rounded-2xl text-left my-6 flex items-start gap-4 shadow-sm">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 border border-amber-400 flex items-center justify-center text-amber-800 shrink-0 mt-0.5">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
           </div>
+          <div class="space-y-1">
+            <h5 class="text-xs font-black text-amber-900 uppercase tracking-wider">Aviso Importante</h5>
+            <p class="text-xs sm:text-sm text-amber-950 font-extrabold leading-relaxed">
+              ⚠️ <strong>Aviso importante:</strong> Esta é apenas uma prévia baseada nas respostas iniciais do seu questionário. Para ter acesso à profundidade dos dados, identificar os gatilhos exatos das travas e obter o diagnóstico completo da sua saúde financeira, é necessário realizar o <strong>Check-up Financeiro</strong> completo.
+            </p>
+          </div>
+        </div>
 
-          <div class="bg-prosperus-bg p-4 rounded-2xl border-2 border-prosperus-border text-center">
-            <div class="text-xs font-bold text-prosperus-bodyText">Nível do Filtro BACEN</div>
-            <div class="text-2xl font-black text-amber-600 mt-1">Nível 4 (Trava)</div>
-            <div class="text-[10px] text-amber-700 font-bold mt-0.5">Retenção por Apontamento</div>
-          </div>
-
-          <div class="bg-prosperus-goldLight p-4 rounded-2xl border-2 border-prosperus-gold text-center">
-            <div class="text-xs font-bold text-prosperus-darkText">Rating Alvo pós Check-up</div>
-            <div class="text-2xl font-black text-prosperus-green mt-1">AAA (Elite)</div>
-            <div class="text-[10px] text-prosperus-green font-bold mt-0.5">Crédito Liberado em Até 48h</div>
-          </div>
+        <!-- Botão de Ação -->
+        <div class="pt-2">
+          <a href="#sales-section" onclick="document.getElementById('sales-section').scrollIntoView({ behavior: 'smooth' }); return false;" class="w-full py-4.5 px-6 bg-gradient-to-r from-prosperus-green via-[#083C2A] to-prosperus-green hover:from-prosperus-greenHover hover:to-prosperus-green text-white font-black text-lg sm:text-xl rounded-2xl shadow-cta-gold border-2 border-prosperus-gold transform hover:-translate-y-1 transition duration-200 flex items-center justify-center gap-3 block cursor-pointer text-center">
+            <span>OBTER MEU CHECK-UP FINANCEIRO COMPLETO</span>
+            <svg class="w-6 h-6 text-prosperus-goldBright shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
         </div>
 
       </div>
@@ -618,87 +645,100 @@
     </section>
 
     <!-- ==========================================
-         SEÇÃO 5: VENDAS / CHECKOUT PROSPERUS (R$ 99,00)
+         SEÇÃO 5: SEÇÃO DE VENDA (CHECK-UP PROSPERUS R$ 99,00)
          ========================================== -->
-    <section id="sales-section" class="hidden space-y-8 my-8">
+    <section id="sales-section" class="hidden space-y-8 my-8 scroll-mt-24">
       
-      <!-- HEADER DA OFERTA -->
-      <div class="text-center space-y-3">
-        <span class="bg-prosperus-goldLight text-prosperus-darkText border-2 border-prosperus-gold/60 px-4 py-1.5 rounded-full text-xs sm:text-sm font-black uppercase tracking-wider shadow-sm">
-          SOLUÇÃO ESTRATÉGICA PROSPERUS
-        </span>
-        <h2 class="text-2xl sm:text-4xl font-black text-prosperus-darkText tracking-tight max-w-2xl mx-auto leading-tight">
-          Destrave seu nome e faturamento no Banco Central com o Check-up Completo
-        </h2>
-        <p class="text-sm sm:text-base text-prosperus-bodyText font-bold max-w-xl mx-auto leading-relaxed">
-          Receba o relatório sigiloso de inteligência bancária com o passo a passo exato para remover apontamentos ocultos e elevar seu Rating para nível AAA.
-        </p>
-      </div>
-
-      <!-- CARD DA OFERTA IRRECUSÁVEL -->
-      <div class="bg-white rounded-3xl p-6 sm:p-10 border-4 border-prosperus-gold shadow-cta-gold relative overflow-hidden">
+      <div class="bg-white rounded-3xl p-6 sm:p-10 border-4 border-prosperus-gold relative shadow-form">
         
-        <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b-2 border-prosperus-border">
+        <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-prosperus-green to-[#031C13] text-prosperus-goldBright font-black text-xs sm:text-sm uppercase tracking-wider px-7 py-2 rounded-full shadow-lg border-2 border-prosperus-gold flex items-center gap-2">
+          <span>✨ Solução Definitiva Prosperus</span>
+        </div>
+
+        <div class="text-center pt-4 space-y-3">
+          <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-prosperus-darkText">
+            Check-up Financeiro Completo
+          </h2>
+          <p class="text-prosperus-bodyText text-base font-bold max-w-xl mx-auto">
+            O diagnóstico consultivo individualizado para mapear, identificar e destravar as barreiras ocultas no BACEN e no seu Rating Bancário.
+          </p>
+        </div>
+
+        <!-- VALUE STACK -->
+        <div class="my-8 space-y-3.5 max-w-2xl mx-auto">
+          <h4 class="text-xs font-black text-prosperus-darkText uppercase tracking-widest text-center">Tudo o que você vai receber com a Prosperus:</h4>
           
-          <div class="space-y-2 text-center md:text-left">
-            <div class="inline-flex items-center gap-2 bg-emerald-100 text-emerald-900 border border-emerald-300 px-3 py-1 rounded-lg text-xs font-extrabold">
-              <span class="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span>
-              <span>Acesso Imediato Liberado por E-mail & WhatsApp</span>
+          <div class="grid grid-cols-1 gap-3.5">
+            
+            <div class="flex items-start gap-4 bg-prosperus-bg border-2 border-prosperus-border p-4 rounded-2xl shadow-sm">
+              <div class="w-7 h-7 rounded-full bg-prosperus-green text-prosperus-goldBright flex items-center justify-center shrink-0 font-black text-sm border border-prosperus-gold">
+                ✓
+              </div>
+              <div>
+                <strong class="text-prosperus-darkText text-base block font-black">1. Mapeamento Completo de Restrições BACEN (SCR)</strong>
+                <span class="text-xs text-prosperus-bodyText font-bold">Identificação exata de códigos de prejuízo, operações vencidas e relatórios sigilosos do Banco Central.</span>
+              </div>
             </div>
-            <h3 class="text-2xl font-black text-prosperus-darkText">Relatório de Check-up Financeiro Prosperus</h3>
-            <p class="text-xs text-prosperus-bodyText font-bold">Consultoria Individualizada de Risco Bancário</p>
+
+            <div class="flex items-start gap-4 bg-prosperus-bg border-2 border-prosperus-border p-4 rounded-2xl shadow-sm">
+              <div class="w-7 h-7 rounded-full bg-prosperus-green text-prosperus-goldBright flex items-center justify-center shrink-0 font-black text-sm border border-prosperus-gold">
+                ✓
+              </div>
+              <div>
+                <strong class="text-prosperus-darkText text-base block font-black">2. Raio-X do Rating Bancário Interno</strong>
+                <span class="text-xs text-prosperus-bodyText font-bold">Análise dos critérios que pontuam seu perfil nos grandes bancos e o que derruba sua nota.</span>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4 bg-prosperus-bg border-2 border-prosperus-border p-4 rounded-2xl shadow-sm">
+              <div class="w-7 h-7 rounded-full bg-prosperus-green text-prosperus-goldBright flex items-center justify-center shrink-0 font-black text-sm border border-prosperus-gold">
+                ✓
+              </div>
+              <div>
+                <strong class="text-prosperus-darkText text-base block font-black">3. Plano de Ação Passo a Passo para Limpeza de Histórico</strong>
+                <span class="text-xs text-prosperus-bodyText font-bold">Roteiro prático e legal para solicitar a atualização dos registros bancários e recuperar a reputação.</span>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4 bg-prosperus-bg border-2 border-prosperus-border p-4 rounded-2xl shadow-sm">
+              <div class="w-7 h-7 rounded-full bg-prosperus-green text-prosperus-goldBright flex items-center justify-center shrink-0 font-black text-sm border border-prosperus-gold">
+                ✓
+              </div>
+              <div>
+                <strong class="text-prosperus-darkText text-base block font-black">4. Guia de Apresentação de Perfil de Baixo Risco</strong>
+                <span class="text-xs text-prosperus-bodyText font-bold">Estruturação da sua movimentação para ser aprovado em grandes bancos com as menores taxas do mercado.</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- PREÇO R$ 99,00 E BOTÃO CONVERSÃO -->
+        <div class="bg-white border-4 border-prosperus-gold rounded-2xl p-6 text-center max-w-md mx-auto space-y-4 shadow-xl">
+          
+          <div class="flex items-center justify-center gap-2 text-xs font-black text-prosperus-darkText bg-prosperus-goldLight border border-prosperus-gold py-1.5 px-4 rounded-full w-fit mx-auto">
+            <svg class="w-4 h-4 text-prosperus-gold animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>Desconto Especial Prosperus Expira em: <strong id="countdown-timer">09:59</strong></span>
           </div>
 
-          <!-- PREÇO PROMOCIONAL R$ 99,00 -->
-          <div class="text-center md:text-right bg-prosperus-bg p-5 rounded-2xl border-2 border-prosperus-border shrink-0 shadow-inner">
-            <div class="text-xs text-prosperus-mutedText font-bold line-through">De R$ <span id="price-de">297,00</span></div>
-            <div class="text-3xl sm:text-4xl font-black text-prosperus-green tracking-tight">
-              R$ <span id="price-por">99,00</span>
+          <div>
+            <div class="flex items-baseline justify-center gap-1 my-3">
+              <span class="text-prosperus-darkText text-2xl font-black">R$</span>
+              <span id="price-por" class="text-5xl sm:text-6xl font-black text-prosperus-darkText tracking-tight">99,00</span>
             </div>
-            <div class="text-xs text-prosperus-gold font-black mt-0.5" id="price-parcelas">
-              12x de R$ 9,90 no cartão
-            </div>
+          </div>
+
+          <div>
+            <a id="checkout-btn" href="https://payfast.greenn.com.br/27s9n8q?b_id_1=9ujy5kr&src=251fe2fa6aca41a0a33fd893ea936f29&sck=251fe2fa6aca41a0a33fd893ea936f29&vid=251fe2fa6aca41a0a33fd893ea936f29" target="_blank" class="w-full py-5 px-6 bg-gradient-to-r from-prosperus-green via-[#083C2A] to-prosperus-green hover:from-prosperus-greenHover hover:to-prosperus-green text-white font-black text-xl rounded-2xl shadow-cta-gold border-2 border-prosperus-gold transform hover:-translate-y-1 transition duration-200 flex items-center justify-center gap-2 block cursor-pointer">
+              <span>GARANTIR MEU CHECK-UP AGORA</span>
+              <svg class="w-6 h-6 text-prosperus-goldBright" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+            <p class="text-[11px] text-prosperus-bodyText mt-2.5 font-bold">Acesso Imediato no E-mail • Garantia Incondicional de 7 Dias</p>
           </div>
 
         </div>
 
-        <!-- LISTA DE BENEFÍCIOS DO CHECK-UP -->
-        <div class="py-8 space-y-3.5">
-          <div class="flex items-start gap-3 text-sm font-bold text-prosperus-darkText">
-            <svg class="w-6 h-6 text-prosperus-gold shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-            <span><strong>Análise de Rating Interno BACEN:</strong> Descubra sua nota real de crédito na visão dos bancos.</span>
-          </div>
 
-          <div class="flex items-start gap-3 text-sm font-bold text-prosperus-darkText">
-            <svg class="w-6 h-6 text-prosperus-gold shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-            <span><strong>Mapeamento de Restrições Ocultas:</strong> Identifique baixas com prejuízo no Registrato/SCR.</span>
-          </div>
-
-          <div class="flex items-start gap-3 text-sm font-bold text-prosperus-darkText">
-            <svg class="w-6 h-6 text-prosperus-gold shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-            <span><strong>Plano de Ação para Nível AAA:</strong> Roteiro prático para liberar empréstimos e cartões de alto limite.</span>
-          </div>
-
-          <div class="flex items-start gap-3 text-sm font-bold text-prosperus-darkText">
-            <svg class="w-6 h-6 text-prosperus-gold shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-            <span><strong>Suporte Prioritário no WhatsApp:</strong> Tira-dúvidas direto com especialista da Prosperus.</span>
-          </div>
-        </div>
-
-        <!-- BOTÃO DE CHECKOUT GREENN -->
-        <div class="text-center space-y-4 pt-4 border-t-2 border-prosperus-border">
-          <a id="checkout-btn" href="https://payfast.greenn.com.br/27s9n8q?b_id_1=9ujy5kr&src=251fe2fa6aca41a0a33fd893ea936f29&sck=251fe2fa6aca41a0a33fd893ea936f29&vid=251fe2fa6aca41a0a33fd893ea936f29" target="_blank" rel="noopener noreferrer" 
-            class="w-full py-5 px-8 bg-gradient-to-r from-prosperus-green via-[#083C2A] to-prosperus-green hover:from-prosperus-greenHover hover:to-prosperus-green text-white font-black text-xl sm:text-2xl rounded-2xl border-4 border-prosperus-gold shadow-cta-gold animate-pulse-glow transform hover:-translate-y-1 transition duration-200 flex items-center justify-center gap-3">
-            <span>SOLICITAR MEU CHECK-UP AGORA POR R$ 99</span>
-            <svg class="w-7 h-7 text-prosperus-goldBright" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-          </a>
-
-          <!-- TIMER DE CONTAGEM REGRESSIVA (9:59) -->
-          <div class="flex items-center justify-center gap-2 text-xs sm:text-sm font-extrabold text-red-700 bg-red-50 border border-red-200 py-2 px-4 rounded-xl max-w-md mx-auto">
-            <svg class="w-4 h-4 text-red-600 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <span>Condição especial por tempo limitado. Expira em: <strong id="countdown-timer" class="font-black text-base text-red-900">09:59</strong></span>
-          </div>
-        </div>
 
       </div>
 
@@ -758,11 +798,10 @@
             <summary class="font-black text-prosperus-darkText cursor-pointer flex justify-between items-center">
               <span>Meus dados e de minha empresa estão seguros?</span>
               <span class="text-prosperus-gold group-open:rotate-180 transition font-black text-base">+</span>
-            </summary>
-            <p class="text-xs text-prosperus-bodyText font-bold mt-3 leading-relaxed">
-              Sim. A Prosperus Inteligência Financeira adota criptografia avançada de ponta a ponta e cumpre 100% das normas da LGPD.
-            </p>
-          </details>
+              <p class="text-xs text-prosperus-bodyText font-bold mt-3 leading-relaxed">
+                Sim, 100% de conformidade com a LGPD (Lei Geral de Proteção de Dados) e criptografia SSL de nível bancário.
+              </p>
+            </details>
         </div>
       </div>
 
@@ -770,156 +809,127 @@
 
   </main>
 
-  <!-- RODAPÉ PROSPERUS -->
-  <footer class="max-w-4xl mx-auto px-4 mt-16 pt-8 border-t-2 border-prosperus-border text-center text-xs text-prosperus-bodyText space-y-3 font-bold">
-    <div class="flex items-center justify-center gap-3">
-      <img src="logo-prosperus.jpg" alt="Prosperus Logo" class="h-8 w-auto object-contain" onerror="this.style.display='none';" />
-      <span class="font-black text-prosperus-darkText tracking-tight text-sm uppercase">PROSPERUS INTELIGÊNCIA FINANCEIRA</span>
+  <!-- RODAPÉ CORPORATIVO -->
+  <footer class="mt-20 border-t-2 border-prosperus-border bg-white pt-10 pb-12 text-center text-xs text-prosperus-bodyText font-bold space-y-4">
+    <div class="max-w-4xl mx-auto px-4 space-y-3">
+      <div class="flex items-center justify-center gap-2">
+        <span class="font-black text-prosperus-darkText uppercase">PROSPERUS INTELIGÊNCIA FINANCEIRA</span>
+      </div>
+      <p class="max-w-2xl mx-auto text-[11px] text-prosperus-mutedText leading-relaxed">
+        A Prosperus é uma plataforma independente de consultoria e análise estratégica de risco financeiro. Não realizamos empréstimos diretos e não cobramos taxas antecipadas para concessão de crédito.
+      </p>
+      <div class="pt-2 text-[11px] text-prosperus-bodyText">
+        © 2026 Prosperus Inteligência Financeira. Todos os direitos reservados.
+      </div>
     </div>
-    <p>© 2026 Prosperus Inteligência Financeira. Todos os direitos reservados.</p>
-    <p class="text-[10px] text-prosperus-mutedText max-w-2xl mx-auto">Este site é independente e não possui vínculo direto com o Banco Central do Brasil, Facebook ou Google. Diagnóstico e consultoria privada de gestão de risco financeiro.</p>
   </footer>
 
-  <!-- ==========================================
-       LÓGICA JAVASCRIPT EM ARQUIVO ÚNICO (VANILLA)
-       ========================================== -->
+  <!-- SCRIPT COMPLETO DO QUIZ E MÁSCARAS -->
   <script>
-    // ESTADO COMPLETO DO QUIZ (7 ETAPAS)
-    let userAnswers = {
-      nome: '',
-      whatsapp: '',
-      renda: '',
-      capacidade_pagamento: '',
-      monitoramento_cpf: '',
-      relacionamento_bancario: '',
-      cpf_cnpj: ''
-    };
     let currentStep = 1;
     const TOTAL_STEPS = 7;
+    const userAnswers = {};
 
-    document.addEventListener("DOMContentLoaded", () => {
-      if (typeof CONFIG !== 'undefined') {
-        const checkoutBtn = document.getElementById('checkout-btn');
-        if (checkoutBtn) checkoutBtn.href = CONFIG.CHECKOUT_URL;
-
-        const elPriceDe = document.getElementById('price-de');
-        if (elPriceDe) elPriceDe.textContent = CONFIG.PRECO_DE;
-
-        const elPricePor = document.getElementById('price-por');
-        if (elPricePor) elPricePor.textContent = CONFIG.PRECO_POR;
-
-        const elPriceParc = document.getElementById('price-parcelas');
-        if (elPriceParc) elPriceParc.textContent = CONFIG.PARCELAS;
-      }
-
-      startCountdownTimer();
-    });
-
-    function scrollToQuiz() {
-      const quizElement = document.getElementById("quiz-container");
-      if (quizElement) {
-        quizElement.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }
-
-    // MÁSCARA TELEFÔNICA AUTOMÁTICA
     function formatPhoneMask(input) {
-      let val = input.value.replace(/\D/g, '');
-      if (val.length > 11) val = val.substring(0, 11);
+      let value = input.value.replace(/\D/g, "");
+      if (value.length > 11) value = value.slice(0, 11);
       
-      if (val.length > 6) {
-        val = `(${val.substring(0, 2)}) ${val.substring(2, 7)}-${val.substring(7)}`;
-      } else if (val.length > 2) {
-        val = `(${val.substring(0, 2)}) ${val.substring(2)}`;
-      } else if (val.length > 0) {
-        val = `(${val}`;
+      if (value.length > 6) {
+        input.value = `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7)}`;
+      } else if (value.length > 2) {
+        input.value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+      } else if (value.length > 0) {
+        input.value = `(${value}`;
+      } else {
+        input.value = "";
       }
-      input.value = val;
     }
 
-    // MÁSCARA AUTOMÁTICA DE CPF (000.000.000-00) OU CNPJ (00.000.000/0000-00)
     function formatCpfCnpjMask(input) {
-      let val = input.value.replace(/\D/g, '');
-      if (val.length > 14) val = val.substring(0, 14);
+      let value = input.value.replace(/\D/g, "");
+      if (value.length > 14) value = value.slice(0, 14);
 
-      if (val.length <= 11) {
-        if (val.length > 9) {
-          val = `${val.substring(0, 3)}.${val.substring(3, 6)}.${val.substring(6, 9)}-${val.substring(9)}`;
-        } else if (val.length > 6) {
-          val = `${val.substring(0, 3)}.${val.substring(3, 6)}.${val.substring(6)}`;
-        } else if (val.length > 3) {
-          val = `${val.substring(0, 3)}.${val.substring(3)}`;
+      if (value.length <= 11) {
+        // CPF: 000.000.000-00
+        if (value.length > 9) {
+          input.value = `${value.slice(0, 3)}.${value.slice(3, 6)}.${value.slice(6, 9)}-${value.slice(9)}`;
+        } else if (value.length > 6) {
+          input.value = `${value.slice(0, 3)}.${value.slice(3, 6)}.${value.slice(6)}`;
+        } else if (value.length > 3) {
+          input.value = `${value.slice(0, 3)}.${value.slice(3)}`;
+        } else {
+          input.value = value;
         }
       } else {
-        if (val.length > 12) {
-          val = `${val.substring(0, 2)}.${val.substring(2, 5)}.${val.substring(5, 8)}/${val.substring(8, 12)}-${val.substring(12)}`;
-        } else if (val.length > 8) {
-          val = `${val.substring(0, 2)}.${val.substring(2, 5)}.${val.substring(5, 8)}/${val.substring(8)}`;
-        } else if (val.length > 5) {
-          val = `${val.substring(0, 2)}.${val.substring(2, 5)}.${val.substring(5)}`;
-        } else if (val.length > 2) {
-          val = `${val.substring(0, 2)}.${val.substring(2)}`;
+        // CNPJ: 00.000.000/0000-00
+        if (value.length > 12) {
+          input.value = `${value.slice(0, 2)}.${value.slice(2, 5)}.${value.slice(5, 8)}/${value.slice(8, 12)}-${value.slice(12)}`;
+        } else if (value.length > 8) {
+          input.value = `${value.slice(0, 2)}.${value.slice(2, 5)}.${value.slice(5, 8)}/${value.slice(8)}`;
+        } else if (value.length > 5) {
+          input.value = `${value.slice(0, 2)}.${value.slice(2, 5)}.${value.slice(5)}`;
+        } else if (value.length > 2) {
+          input.value = `${value.slice(0, 2)}.${value.slice(2)}`;
+        } else {
+          input.value = value;
         }
       }
-      input.value = val;
     }
 
-    // SUBMIT ETAPAS DE TEXTO (NOME, WHATSAPP, CPF/CNPJ)
-    function submitTextStep(step, fieldName, inputId) {
+    function scrollToQuiz() {
+      const container = document.getElementById("quiz-container");
+      if (container) {
+        container.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    function selectChoiceOption(step, key, val) {
+      userAnswers[key] = val;
+      nextQuizStep();
+    }
+
+    function submitTextStep(step, key, inputId) {
       const inputEl = document.getElementById(inputId);
-      const val = inputEl ? inputEl.value.trim() : '';
+      if (!inputEl) return;
+      const rawVal = inputEl.value.trim();
 
-      const isInvalid = !val || 
-        (fieldName === 'whatsapp' && val.replace(/\D/g, '').length < 10) ||
-        (fieldName === 'cpf_cnpj' && val.replace(/\D/g, '').length < 11);
-
-      if (isInvalid) {
-        if (inputEl) {
-          inputEl.classList.add('border-red-500', 'ring-2', 'ring-red-200');
-          inputEl.focus();
-        }
+      if (key === 'nome' && rawVal.length < 3) {
+        alert("Por favor, digite seu nome completo para prosseguir.");
+        inputEl.focus();
         return;
       }
 
-      if (inputEl) {
-        inputEl.classList.remove('border-red-500', 'ring-2', 'ring-red-200');
+      if (key === 'whatsapp' && rawVal.replace(/\D/g, "").length < 10) {
+        alert("Por favor, digite seu número de WhatsApp completo com DDD.");
+        inputEl.focus();
+        return;
       }
 
-      userAnswers[fieldName] = val;
-
-      if (fieldName === 'nome') {
-        const wspName = document.getElementById('wsp-name');
-        if (wspName) wspName.value = val;
-      }
-      if (fieldName === 'whatsapp') {
-        const wspPhone = document.getElementById('wsp-phone');
-        if (wspPhone) wspPhone.value = val;
+      if (key === 'cpf_cnpj') {
+        const digits = rawVal.replace(/\D/g, "");
+        if (digits.length !== 11 && digits.length !== 14) {
+          alert("Por favor, digite um CPF (11 dígitos) ou CNPJ (14 dígitos) válido.");
+          inputEl.focus();
+          return;
+        }
       }
 
-      if (step === TOTAL_STEPS) {
-        saveAndSendLeadData();
-        startSimulatedAnalysis();
-      } else {
-        currentStep = step + 1;
+      userAnswers[key] = rawVal;
+      nextQuizStep();
+    }
+
+    function nextQuizStep() {
+      if (currentStep < TOTAL_STEPS) {
+        currentStep++;
         updateQuizDOM();
+      } else {
+        processAndFinishQuiz();
       }
     }
 
-    // SUBMIT ETAPAS DE MÚLTIPLA ESCOLHA
-    function selectChoiceOption(step, fieldName, optionValue) {
-      userAnswers[fieldName] = optionValue;
+    function processAndFinishQuiz() {
+      startSimulatedAnalysis();
 
-      if (step === TOTAL_STEPS) {
-        saveAndSendLeadData();
-        startSimulatedAnalysis();
-      } else {
-        currentStep = step + 1;
-        updateQuizDOM();
-      }
-    }
-
-    // DISPARO E SALVAMENTO DE LEADS (PIXEL GET & WEBHOOK POST)
-    function saveAndSendLeadData() {
       const leadPayload = {
         data_registro: new Date().toLocaleString('pt-BR'),
         timestamp: new Date().toISOString(),
@@ -933,7 +943,7 @@
         origem_url: window.location.href
       };
 
-      console.log("📊 [PROSPERUS LEAD CAPTURED]:", leadPayload);
+      console.log("📌 [PROSPERUS LEAD CAPTURED]:", leadPayload);
 
       // 0. Salvamento direto no Supabase Client (Tabela leads)
       try {
@@ -959,7 +969,6 @@
       // 2. Envio para Webhook do Google Sheets (Pixel GET + POST Dual-Dispatch)
       if (typeof CONFIG !== 'undefined' && CONFIG.WEBHOOK_URL && CONFIG.WEBHOOK_URL.trim() !== '' && CONFIG.WEBHOOK_URL !== '/api/leads') {
         try {
-          // Pixel GET (Query string) - Funciona 100% no Google Apps Script sem bloqueio
           const params = new URLSearchParams({
             data_registro: leadPayload.data_registro,
             nome: leadPayload.nome,
@@ -975,7 +984,6 @@
           const pixel = new Image();
           pixel.src = CONFIG.WEBHOOK_URL + (CONFIG.WEBHOOK_URL.includes('?') ? '&' : '?') + params;
 
-          // POST Fallback
           const isGoogleScript = CONFIG.WEBHOOK_URL.includes('script.google.com');
           fetch(CONFIG.WEBHOOK_URL, {
             method: 'POST',
@@ -990,7 +998,6 @@
       }
     }
 
-    // ATUALIZA A INTERFACE E BARRA DE PROGRESSO (1 A 7)
     function updateQuizDOM() {
       const steps = document.querySelectorAll(".quiz-step");
       steps.forEach(el => {
@@ -1024,7 +1031,6 @@
       scrollToQuiz();
     }
 
-    // ANIMAÇÃO DE PROCESSAMENTO COM NOMES E DADOS PERSONALIZADOS
     function startSimulatedAnalysis() {
       const quizContainer = document.getElementById("quiz-container");
       const loadingScreen = document.getElementById("loading-screen");
@@ -1065,7 +1071,6 @@
 
       if (loadingScreen) loadingScreen.classList.add("hidden");
       
-      // Personaliza o texto da tela de diagnóstico com o nome do cliente
       if (userAnswers.nome) {
         const diagNameEl = document.getElementById("diagnosis-user-name");
         if (diagNameEl) diagNameEl.textContent = userAnswers.nome;
@@ -1079,41 +1084,6 @@
       if (salesSection) {
         salesSection.classList.remove("hidden");
       }
-    }
-
-    function startCountdownTimer() {
-      let duration = 9 * 60 + 59;
-      const timerElement = document.getElementById("countdown-timer");
-
-      setInterval(() => {
-        let minutes = parseInt(duration / 60, 10);
-        let seconds = parseInt(duration % 60, 10);
-
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-
-        if (timerElement) {
-          timerElement.textContent = minutes + ":" + seconds;
-        }
-
-        if (--duration < 0) {
-          duration = 5 * 60;
-        }
-      }, 1000);
-    }
-
-    function handleWhatsappSubmit(event) {
-      event.preventDefault();
-      const name = document.getElementById("wsp-name").value || userAnswers.nome;
-      const phone = document.getElementById("wsp-phone").value || userAnswers.whatsapp;
-
-      const defaultMsg = CONFIG.WHATSAPP_MESSAGE_DEFAULT;
-      const textMessage = `Olá! Meu nome é ${name} (${phone}). Renda: ${userAnswers.renda || 'Não informada'}. ${defaultMsg}`;
-
-      const encodedText = encodeURIComponent(textMessage);
-      const whatsappUrl = `https://api.whatsapp.com/send?phone=${CONFIG.WHATSAPP_NUMBER}&text=${encodedText}`;
-
-      window.open(whatsappUrl, "_blank");
     }
   </script>
 </body>
