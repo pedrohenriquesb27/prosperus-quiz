@@ -18,10 +18,11 @@ const MIME_TYPES = {
   '.json': 'application/json; charset=utf-8'
 };
 
+const CSV_HEADERS = '"Data e Hora";"Nome Completo";"WhatsApp";"Faixa de Renda";"Capacidade Mensal de Pagamento";"Acompanha CPF/Score?";"Quantidade de Bancos";"CPF/CNPJ";"Página de Origem"\n';
+
 // Inicializa o arquivo CSV se não existir
 if (!fs.existsSync(CSV_FILE)) {
-  const headers = 'Data/Hora;Nome;WhatsApp;Faixa de Renda;Capacidade de Pagamento;Monitoramento CPF;Relacionamento Bancario;URL\n';
-  fs.writeFileSync(CSV_FILE, '\uFEFF' + headers, 'utf8'); // BOM UTF-8 para abrir perfeito no Excel
+  fs.writeFileSync(CSV_FILE, '\uFEFF' + CSV_HEADERS, 'utf8');
 }
 
 // Inicializa o arquivo JSON se não existir
@@ -30,7 +31,6 @@ if (!fs.existsSync(JSON_FILE)) {
 }
 
 const server = http.createServer((req, res) => {
-  // CORS Headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -41,8 +41,10 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  const reqUrl = req.url || '';
+
   // ENDPOINT DE RECEBIMENTO DE LEADS (POST /api/leads)
-  if (req.url === '/api/leads' && req.method === 'POST') {
+  if (reqUrl.startsWith('/api/leads') && req.method === 'POST') {
     let body = '';
     req.on('data', chunk => body += chunk.toString());
     req.on('end', () => {
@@ -55,14 +57,17 @@ const server = http.createServer((req, res) => {
         const capacidade = (lead.capacidade_pagamento || '').replace(/;/g, ',');
         const cpf = (lead.monitoramento_cpf || '').replace(/;/g, ',');
         const bancos = (lead.relacionamento_bancario || '').replace(/;/g, ',');
+        const cpfCnpj = (lead.cpf_cnpj || lead.documento || '').replace(/;/g, ',');
         const url = (lead.origem_url || '').replace(/;/g, ',');
 
-        // Linha no CSV (separador ; para abrir no Excel do Brasil)
-        const csvLine = `"${timestamp}";"${nome}";"${whatsapp}";"${renda}";"${capacidade}";"${cpf}";"${bancos}";"${url}"\n`;
+        const csvLine = `"${timestamp}";"${nome}";"${whatsapp}";"${renda}";"${capacidade}";"${cpf}";"${bancos}";"${cpfCnpj}";"${url}"\n`;
         fs.appendFileSync(CSV_FILE, csvLine, 'utf8');
 
-        // Adiciona ao JSON
-        const leadsArr = JSON.parse(fs.readFileSync(JSON_FILE, 'utf8') || '[]');
+        let leadsArr = [];
+        try {
+          leadsArr = JSON.parse(fs.readFileSync(JSON_FILE, 'utf8') || '[]');
+        } catch(e) { leadsArr = []; }
+        
         leadsArr.push(lead);
         fs.writeFileSync(JSON_FILE, JSON.stringify(leadsArr, null, 2), 'utf8');
 
@@ -79,8 +84,15 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // ENDPOINT DE LEITURA DE LEADS (GET /api/leads)
-  if (req.url === '/api/leads' && req.method === 'GET') {
+  // ENDPOINT DE LEITURA DE LEADS (GET /api/leads ou /api/leads?format=csv)
+  if (reqUrl.startsWith('/api/leads') && req.method === 'GET') {
+    if (reqUrl.includes('format=csv')) {
+      const csvData = fs.readFileSync(CSV_FILE, 'utf8');
+      res.writeHead(200, { 'Content-Type': 'text/csv; charset=utf-8' });
+      res.end(csvData);
+      return;
+    }
+
     const leadsData = fs.readFileSync(JSON_FILE, 'utf8');
     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     res.end(leadsData);
@@ -88,7 +100,9 @@ const server = http.createServer((req, res) => {
   }
 
   // SERVIDOR DE ARQUIVOS ESTÁTICOS
-  let reqPath = req.url === '/' ? '/index.html' : req.url.split('?')[0];
+  let cleanPath = reqUrl.split('?')[0];
+  let reqPath = cleanPath === '/' ? '/index.html' : cleanPath;
+  if (reqPath === '/admin' || reqPath === '/login' || reqPath.startsWith('/admin')) reqPath = '/admin.html';
   let targetFile = path.join(__dirname, reqPath);
 
   fs.readFile(targetFile, (err, content) => {
@@ -114,5 +128,5 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, () => {
   console.log(`🚀 Servidor da Prosperus ativo em http://localhost:${PORT}`);
   console.log(`📊 Endpoint de Leads: http://localhost:${PORT}/api/leads`);
-  console.log(`📁 Download Planilha CSV: http://localhost:${PORT}/leads.csv`);
+  console.log(`📁 Planilha CSV Google Sheets: http://localhost:${PORT}/api/leads?format=csv`);
 });

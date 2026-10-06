@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-[#F5F3EF]">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Área Administrativa - Gestão de Leads | Prosperus Inteligência Financeira</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Fontes Google -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Supabase JS Client & Configuração -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabaseConfig.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#062E20',
+              gold: '#C59B27',
+              goldHover: '#a37f1d',
+              bgLight: '#F5F3EF',
+              textDark: '#0A1910',
+              cardBg: '#FFFFFF',
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Playfair Display"', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #0A1910;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #F1F1F1;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #C59B27;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col antialiased bg-[#F5F3EF] selection:bg-[#C59B27] selection:text-white">
+
+  <!-- ==================== TELA 1: LOGIN (/admin ou /login) ==================== -->
+  <div id="loginSection" class="fixed inset-0 z-50 flex items-center justify-center bg-[#062E20] p-4">
+    
+    <!-- Background Decorativo -->
+    <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#C59B27_1px,transparent_1px)] [background-size:16px_16px]"></div>
+
+    <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border border-[#C59B27]/40 relative overflow-hidden text-center z-10">
+      
+      <!-- Logo Emblem -->
+      <div class="w-16 h-16 bg-[#062E20] rounded-2xl mx-auto flex items-center justify-center mb-4 border border-[#C59B27]/40 shadow-lg">
+        <span class="font-serif text-2xl font-bold text-[#C59B27]">P</span>
+      </div>
+
+      <h2 class="text-2xl font-extrabold text-[#062E20] tracking-tight">Área Administrativa</h2>
+      <p class="text-xs text-gray-500 mt-1 mb-6">Prosperus Inteligência Financeira • Gestão de Leads</p>
+
+      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4 text-left">
+        <div>
+          <label class="block text-xs font-bold text-[#062E20] uppercase tracking-wider mb-2">
+            <i class="fa-solid fa-lock text-[#C59B27] mr-1"></i> Senha de Acesso Admin
+          </label>
+          <div class="relative">
+            <input type="password" id="passwordInput" placeholder="Digite sua senha..." required
+              class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#C59B27] focus:border-[#C59B27] text-sm outline-none transition text-[#062E20] font-medium pr-10">
+            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#062E20]">
+              <i id="eyeIcon" class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+          <p id="loginError" class="hidden text-xs text-red-500 font-semibold mt-2 text-center">
+            <i class="fa-solid fa-circle-exclamation mr-1"></i> Senha incorreta. Tente 'admin123'.
+          </p>
+        </div>
+
+        <button type="submit" 
+          class="w-full py-3.5 px-6 bg-[#062E20] hover:bg-[#042016] text-[#C59B27] font-bold rounded-xl shadow-md hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 border border-[#C59B27]/30">
+          <span>Entrar no Dashboard</span>
+          <i class="fa-solid fa-arrow-right text-sm"></i>
+        </button>
+      </form>
+
+      <div class="mt-6 pt-4 border-t border-gray-100 text-xs text-gray-400 flex items-center justify-center gap-1">
+        <i class="fa-solid fa-key text-[#C59B27]"></i>
+        <span>Senha padrão: <strong class="text-[#062E20]">admin123</strong></span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== TELA 2: DASHBOARD (/admin/dashboard) ==================== -->
+  <div id="dashboardSection" class="hidden flex-1 flex flex-col min-h-screen">
+    
+    <!-- TOP NAVBAR -->
+    <header class="bg-[#062E20] text-white border-b border-[#C59B27]/30 sticky top-0 z-30 shadow-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+        
+        <!-- Brand Logo -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-[#C59B27]/40">
+            <span class="font-serif text-xl font-bold text-[#C59B27]">P</span>
+          </div>
+          <div>
+            <span class="font-bold text-lg text-white tracking-wide block leading-none">PROSPERUS</span>
+            <span class="text-[10px] text-[#C59B27] tracking-wider uppercase font-semibold">Painel de Leads do Quiz</span>
+          </div>
+        </div>
+
+        <!-- Ações do Cabeçalho -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          
+          <!-- Indicador de Status -->
+          <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span>Online</span>
+          </div>
+
+          <!-- Botão Atualizar -->
+          <button onclick="loadLeads()" title="Atualizar Dados"
+            class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-rotate-right" id="refreshSpinner"></i>
+            <span class="hidden sm:inline">Atualizar</span>
+          </button>
+
+          <!-- Botão Sair / Logout -->
+          <button onclick="handleLogout()" title="Sair da Conta Admin"
+            class="px-3 py-1.5 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 border border-red-500/30">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Sair</span>
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      
+      <!-- HERO BANNER DA ÁREA ADMIN -->
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-200/80 shadow-sm">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#C59B27]/15 text-[#8c6b12] border border-[#C59B27]/30 uppercase">
+              Dashboard / Admin
+            </span>
+            <span class="text-xs text-gray-400">• Check-up Financeiro</span>
+          </div>
+          <h1 class="text-2xl font-extrabold text-[#062E20] tracking-tight">Leads Capturados no Quiz</h1>
+          <p class="text-xs sm:text-sm text-gray-500 mt-1">Gerencie os dados dos potenciais clientes que preencheram o diagnóstico financeiro.</p>
+        </div>
+
+        <!-- BOTÕES DE EXPORTAÇÃO E AÇÕES -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          
+          <button onclick="copyAllContacts()" 
+            class="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center gap-2">
+            <i class="fa-regular fa-copy"></i>
+            <span id="copyBtnText">Copiar Contatos (WhatsApp)</span>
+          </button>
+
+          <a href="/api/leads?format=csv" download="leads_prosperus.csv"
+            class="px-4 py-2.5 bg-[#062E20] hover:bg-[#042016] text-[#C59B27] text-xs font-bold rounded-xl shadow-sm transition flex items-center gap-2 border border-[#C59B27]/40">
+            <i class="fa-solid fa-file-excel text-sm"></i>
+            <span>Exportar CSV / Excel</span>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- CARDS RESUMO / MÉTRICAS -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Total Leads -->
+        <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total de Leads</p>
+            <h3 id="statTotal" class="text-3xl font-extrabold text-[#062E20] mt-1">0</h3>
+            <p class="text-[11px] text-emerald-600 font-semibold mt-1">
+              <i class="fa-solid fa-check-circle mr-0.5"></i> Formulários Concluídos
+            </p>
+          </div>
+          <div class="w-12 h-12 bg-[#062E20]/5 rounded-xl flex items-center justify-center text-[#062E20] text-xl">
+            <i class="fa-solid fa-users"></i>
+          </div>
+        </div>
+
+        <!-- Renda Qualificada (> 10k) -->
+        <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Renda > R$ 10k</p>
+            <h3 id="statAltaRenda" class="text-3xl font-extrabold text-[#C59B27] mt-1">0</h3>
+            <p class="text-[11px] text-[#C59B27] font-semibold mt-1">
+              <i class="fa-solid fa-star mr-0.5"></i> Perfil Alta Renda
+            </p>
+          </div>
+          <div class="w-12 h-12 bg-[#C59B27]/10 rounded-xl flex items-center justify-center text-[#C59B27] text-xl">
+            <i class="fa-solid fa-sack-dollar"></i>
+          </div>
+        </div>
+
+        <!-- Capacidade Confirmada -->
+        <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Capacidade Ok</p>
+            <h3 id="statCapacidade" class="text-3xl font-extrabold text-[#062E20] mt-1">0</h3>
+            <p class="text-[11px] text-gray-500 font-semibold mt-1">Sabe valor disponível</p>
+          </div>
+          <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 text-xl">
+            <i class="fa-solid fa-wallet"></i>
+          </div>
+        </div>
+
+        <!-- Último Registro -->
+        <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Última Captura</p>
+            <h3 id="statUltimo" class="text-sm font-bold text-[#062E20] mt-2 truncate max-w-[130px]">-</h3>
+            <p class="text-[11px] text-gray-400 font-semibold mt-1">Atualizado em tempo real</p>
+          </div>
+          <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 text-xl">
+            <i class="fa-regular fa-clock"></i>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- BARRA DE FILTROS E PESQUISA -->
+      <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+        
+        <!-- Campo Busca -->
+        <div class="relative w-full sm:w-80">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+          <input type="text" id="searchInput" oninput="filterLeads()" placeholder="Buscar por Nome, CPF/CNPJ ou WhatsApp..."
+            class="w-full pl-10 pr-4 py-2.5 bg-gray-50 rounded-xl border border-gray-200 text-sm text-[#062E20] focus:ring-2 focus:ring-[#C59B27] focus:bg-white outline-none transition">
+        </div>
+
+        <!-- Filtro Renda -->
+        <div class="flex items-center gap-3 w-full sm:w-auto">
+          <label class="text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap">Filtrar Renda:</label>
+          <select id="rendaFilter" onchange="filterLeads()"
+            class="w-full sm:w-auto px-4 py-2.5 bg-gray-50 rounded-xl border border-gray-200 text-sm text-[#062E20] font-medium focus:ring-2 focus:ring-[#C59B27] focus:bg-white outline-none transition cursor-pointer">
+            <option value="ALL">Todas as Faixas</option>
+            <option value="10k">Acima de R$ 10.000</option>
+            <option value="5k">R$ 5.000 a R$ 10.000</option>
+            <option value="3k">R$ 3.000 a R$ 5.000</option>
+            <option value="outros">Até R$ 3.000</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- TABELA RESPONSIVA DE LEADS -->
+      <div class="bg-white rounded-2xl border border-gray-200/80 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-[#062E20] text-white text-[11px] font-bold uppercase tracking-wider">
+                <th class="py-3.5 px-4">Data e Hora</th>
+                <th class="py-3.5 px-4">Nome Completo</th>
+                <th class="py-3.5 px-4">CPF / CNPJ</th>
+                <th class="py-3.5 px-4">WhatsApp</th>
+                <th class="py-3.5 px-4">Faixa de Renda</th>
+                <th class="py-3.5 px-4">Capacidade Mensal</th>
+                <th class="py-3.5 px-4">Acompanha CPF?</th>
+                <th class="py-3.5 px-4">Qtd. de Bancos</th>
+                <th class="py-3.5 px-4 text-center">Contato Direct</th>
+              </tr>
+            </thead>
+            <tbody id="leadsTableBody" class="divide-y divide-gray-100 text-sm font-medium">
+              <!-- Linhas populadas via JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Estado Vazio -->
+        <div id="emptyState" class="hidden py-12 text-center text-gray-500">
+          <div class="w-16 h-16 bg-gray-100 rounded-full mx-auto flex items-center justify-center text-gray-400 text-2xl mb-3">
+            <i class="fa-solid fa-inbox"></i>
+          </div>
+          <p class="font-bold text-base text-[#062E20]">Nenhum lead encontrado</p>
+          <p class="text-xs text-gray-400 mt-1">Aguarde novos preenchimentos no quiz do site.</p>
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-400">
+      <p>© 2026 Prosperus Inteligência Financeira • Sistema de Gestão de Leads Admin</p>
+    </footer>
+
+  </div>
+
+  <!-- LÓGICA JAVASCRIPT DO PAINEL -->
+  <script>
+    let allLeads = [];
+    const VALID_PASSWORDS = ['admin123', '1234', 'admin', 'prosperus'];
+
+    // 1. GERENCIAMENTO DE AUTENTICAÇÃO
+    function handleLogin(e) {
+      if (e) e.preventDefault();
+      const inputPass = document.getElementById('passwordInput').value.trim();
+      const errorMsg = document.getElementById('loginError');
+
+      if (VALID_PASSWORDS.includes(inputPass)) {
+        localStorage.setItem('prosperus_admin_auth', 'true');
+        showDashboard();
+      } else {
+        errorMsg.classList.remove('hidden');
+      }
+    }
+
+    function togglePasswordVisibility() {
+      const passInput = document.getElementById('passwordInput');
+      const eyeIcon = document.getElementById('eyeIcon');
+      if (passInput.type === 'password') {
+        passInput.type = 'text';
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+      } else {
+        passInput.type = 'password';
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+      }
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('prosperus_admin_auth');
+      document.getElementById('passwordInput').value = '';
+      showLogin();
+    }
+
+    function showLogin() {
+      document.getElementById('loginSection').classList.remove('hidden');
+      document.getElementById('dashboardSection').classList.add('hidden');
+    }
+
+    function showDashboard() {
+      document.getElementById('loginSection').classList.add('hidden');
+      document.getElementById('dashboardSection').classList.remove('hidden');
+      loadLeads();
+    }
+
+    // 2. BUSCA DE DADOS DOS LEADS (SUPABASE EM TEMPO REAL + FALLBACK)
+    async function loadLeads() {
+      const spinner = document.getElementById('refreshSpinner');
+      if (spinner) spinner.classList.add('fa-spin');
+
+      let leadsFetched = false;
+
+      // 1. Tenta buscar direto do Supabase se o cliente estiver instanciado
+      try {
+        const client = window.getSupabaseClient ? window.getSupabaseClient() : null;
+        if (client) {
+          const { data, error } = await client
+            .from('leads')
+            .select('*')
+            .order('id', { ascending: false });
+
+          if (!error && Array.isArray(data) && data.length > 0) {
+            console.log('✅ Leads carregados do Supabase em tempo real:', data.length);
+            allLeads = data;
+            leadsFetched = true;
+            updateStats(allLeads);
+            renderTable(allLeads, false); // Já ordenado do mais recente para o mais antigo pelo Supabase
+          }
+        }
+      } catch (spErr) {
+        console.warn('⚠️ Supabase Realtime fetch bypass:', spErr.message);
+      }
+
+      // 2. Fallback para /api/leads se o Supabase não estiver configurado ou falhar
+      if (!leadsFetched) {
+        try {
+          const res = await fetch('/api/leads');
+          if (!res.ok) throw new Error('Erro ao carregar endpoint /api/leads');
+          const data = await res.json();
+
+          allLeads = Array.isArray(data) ? data : [];
+          updateStats(allLeads);
+          renderTable(allLeads, true);
+        } catch (err) {
+          console.warn('Servidor rodando estático ou offline:', err);
+        }
+      }
+
+      if (spinner) setTimeout(() => spinner.classList.remove('fa-spin'), 400);
+    }
+
+    // 3. ATUALIZAR MÉTRICAS
+    function updateStats(leads) {
+      document.getElementById('statTotal').innerText = leads.length;
+
+      const altaRenda = leads.filter(l => (l.faixa_renda || '').includes('10.000')).length;
+      document.getElementById('statAltaRenda').innerText = altaRenda;
+
+      const capacidadeOk = leads.filter(l => (l.capacidade_pagamento || '').toLowerCase().includes('sim')).length;
+      document.getElementById('statCapacidade').innerText = capacidadeOk;
+
+      if (leads.length > 0) {
+        const lastLead = leads[leads.length - 1];
+        document.getElementById('statUltimo').innerText = lastLead.data_registro || 'Recentemente';
+      } else {
+        document.getElementById('statUltimo').innerText = '-';
+      }
+    }
+
+    // 4. FILTRAR DADOS DA TABELA
+    function filterLeads() {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+      const rendaVal = document.getElementById('rendaFilter').value;
+
+      const filtered = allLeads.filter(lead => {
+        const nameMatch = (lead.nome || '').toLowerCase().includes(query);
+        const phoneMatch = (lead.whatsapp || '').toLowerCase().includes(query);
+        const docMatch = (lead.cpf_cnpj || lead.documento || '').toLowerCase().includes(query);
+        const searchMatches = nameMatch || phoneMatch || docMatch;
+
+        let rendaMatches = true;
+        if (rendaVal === '10k') {
+          rendaMatches = (lead.faixa_renda || '').includes('10.000');
+        } else if (rendaVal === '5k') {
+          rendaMatches = (lead.faixa_renda || '').includes('5.000');
+        } else if (rendaVal === '3k') {
+          rendaMatches = (lead.faixa_renda || '').includes('3.000');
+        } else if (rendaVal === 'outros') {
+          rendaMatches = !(lead.faixa_renda || '').includes('10.000') && !(lead.faixa_renda || '').includes('5.000');
+        }
+
+        return searchMatches && rendaMatches;
+      });
+
+      renderTable(filtered, false);
+    }
+
+    // 5. RENDERIZAR TABELA
+    function renderTable(leads, shouldReverse = true) {
+      const tbody = document.getElementById('leadsTableBody');
+      const emptyState = document.getElementById('emptyState');
+      tbody.innerHTML = '';
+
+      if (leads.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      const displayLeads = shouldReverse ? [...leads].reverse() : leads;
+
+      displayLeads.forEach(lead => {
+        const cleanPhone = (lead.whatsapp || '').replace(/\D/g, '');
+        const waLink = cleanPhone ? `https://wa.me/55${cleanPhone}?text=Olá%20${encodeURIComponent(lead.nome || '')},%20sou%20da%20Prosperus%20Inteligência%20Financeira!` : '#';
+
+        const isAltaRenda = (lead.faixa_renda || '').includes('10.000');
+        const rendaBadgeClass = isAltaRenda 
+          ? 'bg-[#C59B27]/15 text-[#8c6b12] border-[#C59B27]/30 font-bold' 
+          : 'bg-emerald-50 text-emerald-800 border-emerald-200';
+
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-gray-50/80 transition border-b border-gray-100 text-[#062E20]';
+        
+        tr.innerHTML = `
+          <td class="py-3.5 px-4 text-xs font-semibold text-gray-500 whitespace-nowrap">
+            ${lead.data_registro || '-'}
+          </td>
+          <td class="py-3.5 px-4 font-bold text-[#062E20]">
+            ${lead.nome || 'Não informado'}
+          </td>
+          <td class="py-3.5 px-4 text-xs font-mono font-bold text-[#062E20] whitespace-nowrap">
+            ${lead.cpf_cnpj || lead.documento || '-'}
+          </td>
+          <td class="py-3.5 px-4 whitespace-nowrap">
+            <a href="${waLink}" target="_blank" rel="noopener" 
+              class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 font-semibold text-xs border border-emerald-200 hover:bg-emerald-600 hover:text-white transition">
+              <i class="fa-brands fa-whatsapp text-sm"></i>
+              <span>${lead.whatsapp || 'Indisponível'}</span>
+            </a>
+          </td>
+          <td class="py-3.5 px-4 whitespace-nowrap">
+            <span class="inline-block px-2.5 py-1 rounded-full text-xs border ${rendaBadgeClass}">
+              ${lead.faixa_renda || '-'}
+            </span>
+          </td>
+          <td class="py-3.5 px-4 text-xs">
+            ${lead.capacidade_pagamento || '-'}
+          </td>
+          <td class="py-3.5 px-4 text-xs whitespace-nowrap">
+            <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-gray-100 text-gray-700">
+              ${lead.monitoramento_cpf || '-'}
+            </span>
+          </td>
+          <td class="py-3.5 px-4 text-xs">
+            ${lead.relacionamento_bancario || '-'}
+          </td>
+          <td class="py-3.5 px-4 text-center whitespace-nowrap">
+            <a href="${waLink}" target="_blank" rel="noopener" title="Abrir conversa no WhatsApp"
+              class="w-8 h-8 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white inline-flex items-center justify-center shadow-sm transition">
+              <i class="fa-brands fa-whatsapp"></i>
+            </a>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    // 6. COPIAR TODOS OS CONTATOS PARA WHATSAPP
+    function copyAllContacts() {
+      if (allLeads.length === 0) return alert('Nenhum lead disponível para copiar.');
+
+      const textList = allLeads.map(l => `${l.nome || 'Lead'} - Doc: ${l.cpf_cnpj || l.documento || 's/doc'} - ${l.whatsapp || ''}`).join('\n');
+      navigator.clipboard.writeText(textList).then(() => {
+        const btnText = document.getElementById('copyBtnText');
+        btnText.innerText = 'Copiado para Área de Transferência!';
+        setTimeout(() => {
+          btnText.innerText = 'Copiar Contatos (WhatsApp)';
+        }, 2500);
+      });
+    }
+
+    // VERIFICA SESSÃO AO CARREGAR
+    window.addEventListener('DOMContentLoaded', () => {
+      const isAuth = localStorage.getItem('prosperus_admin_auth');
+      if (isAuth === 'true') {
+        showDashboard();
+      } else {
+        showLogin();
+      }
+    });
+  </script>
+</body>
+</html>
