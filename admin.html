@@ -254,7 +254,7 @@
         <!-- Campo Busca -->
         <div class="relative w-full sm:w-80">
           <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-          <input type="text" id="searchInput" oninput="filterLeads()" placeholder="Buscar por Nome, CPF/CNPJ ou WhatsApp..."
+          <input type="text" id="searchInput" oninput="filterLeads()" placeholder="Buscar por Nome ou WhatsApp..."
             class="w-full pl-10 pr-4 py-2.5 bg-gray-50 rounded-xl border border-gray-200 text-sm text-[#062E20] focus:ring-2 focus:ring-[#C59B27] focus:bg-white outline-none transition">
         </div>
 
@@ -281,7 +281,7 @@
               <tr class="bg-[#062E20] text-white text-[11px] font-bold uppercase tracking-wider">
                 <th class="py-3.5 px-4">Data e Hora</th>
                 <th class="py-3.5 px-4">Nome Completo</th>
-                <th class="py-3.5 px-4">CPF / CNPJ</th>
+                <th class="py-3.5 px-4">E-mail / Documento</th>
                 <th class="py-3.5 px-4">WhatsApp</th>
                 <th class="py-3.5 px-4">Faixa de Renda</th>
                 <th class="py-3.5 px-4">Capacidade Mensal</th>
@@ -373,28 +373,41 @@
 
       let leadsFetched = false;
 
-      // 1. Tenta buscar direto do Supabase se o cliente estiver instanciado
+      // 1. Tenta buscar direto da tabela 'quiz_leads' ou 'leads' do Supabase
       try {
         const client = window.getSupabaseClient ? window.getSupabaseClient() : null;
         if (client) {
-          const { data, error } = await client
-            .from('leads')
+          // Tenta tabela 'quiz_leads' primeiro (ordenado por created_at desc)
+          let { data, error } = await client
+            .from('quiz_leads')
             .select('*')
-            .order('id', { ascending: false });
+            .order('created_at', { ascending: false });
 
-          if (!error && Array.isArray(data) && data.length > 0) {
+          if (error || !data || data.length === 0) {
+            // Fallback para tabela 'leads'
+            const fallback = await client
+              .from('leads')
+              .select('*')
+              .order('id', { ascending: false });
+
+            if (!fallback.error && Array.isArray(fallback.data) && fallback.data.length > 0) {
+              data = fallback.data;
+            }
+          }
+
+          if (Array.isArray(data) && data.length > 0) {
             console.log('✅ Leads carregados do Supabase em tempo real:', data.length);
             allLeads = data;
             leadsFetched = true;
             updateStats(allLeads);
-            renderTable(allLeads, false); // Já ordenado do mais recente para o mais antigo pelo Supabase
+            renderTable(allLeads, false);
           }
         }
       } catch (spErr) {
         console.warn('⚠️ Supabase Realtime fetch bypass:', spErr.message);
       }
 
-      // 2. Fallback para /api/leads se o Supabase não estiver configurado ou falhar
+      // 2. Fallback para /api/leads se o Supabase não retornar dados
       if (!leadsFetched) {
         try {
           const res = await fetch('/api/leads');
@@ -416,15 +429,16 @@
     function updateStats(leads) {
       document.getElementById('statTotal').innerText = leads.length;
 
-      const altaRenda = leads.filter(l => (l.faixa_renda || '').includes('10.000')).length;
+      const altaRenda = leads.filter(l => (l.faixa_renda || (l.respostas && l.respostas.renda) || '').includes('10.000')).length;
       document.getElementById('statAltaRenda').innerText = altaRenda;
 
-      const capacidadeOk = leads.filter(l => (l.capacidade_pagamento || '').toLowerCase().includes('sim')).length;
+      const capacidadeOk = leads.filter(l => (l.capacidade_pagamento || (l.respostas && l.respostas.capacidade) || '').toLowerCase().includes('sim')).length;
       document.getElementById('statCapacidade').innerText = capacidadeOk;
 
       if (leads.length > 0) {
-        const lastLead = leads[leads.length - 1];
-        document.getElementById('statUltimo').innerText = lastLead.data_registro || 'Recentemente';
+        const lastLead = leads[0];
+        const dateStr = lastLead.created_at ? new Date(lastLead.created_at).toLocaleString('pt-BR') : (lastLead.data_registro || 'Recentemente');
+        document.getElementById('statUltimo').innerText = dateStr;
       } else {
         document.getElementById('statUltimo').innerText = '-';
       }
@@ -437,19 +451,21 @@
 
       const filtered = allLeads.filter(lead => {
         const nameMatch = (lead.nome || '').toLowerCase().includes(query);
-        const phoneMatch = (lead.whatsapp || '').toLowerCase().includes(query);
+        const phoneMatch = (lead.telefone || lead.whatsapp || '').toLowerCase().includes(query);
+        const emailMatch = (lead.email || '').toLowerCase().includes(query);
         const docMatch = (lead.cpf_cnpj || lead.documento || '').toLowerCase().includes(query);
-        const searchMatches = nameMatch || phoneMatch || docMatch;
+        const searchMatches = nameMatch || phoneMatch || emailMatch || docMatch;
 
+        let rendaStr = lead.faixa_renda || (lead.respostas && lead.respostas.renda) || '';
         let rendaMatches = true;
         if (rendaVal === '10k') {
-          rendaMatches = (lead.faixa_renda || '').includes('10.000');
+          rendaMatches = rendaStr.includes('10.000');
         } else if (rendaVal === '5k') {
-          rendaMatches = (lead.faixa_renda || '').includes('5.000');
+          rendaMatches = rendaStr.includes('5.000');
         } else if (rendaVal === '3k') {
-          rendaMatches = (lead.faixa_renda || '').includes('3.000');
+          rendaMatches = rendaStr.includes('3.000');
         } else if (rendaVal === 'outros') {
-          rendaMatches = !(lead.faixa_renda || '').includes('10.000') && !(lead.faixa_renda || '').includes('5.000');
+          rendaMatches = !rendaStr.includes('10.000') && !rendaStr.includes('5.000');
         }
 
         return searchMatches && rendaMatches;
@@ -473,54 +489,63 @@
       const displayLeads = shouldReverse ? [...leads].reverse() : leads;
 
       displayLeads.forEach(lead => {
-        const cleanPhone = (lead.whatsapp || '').replace(/\D/g, '');
-        const waLink = cleanPhone ? `https://wa.me/55${cleanPhone}?text=Olá%20${encodeURIComponent(lead.nome || '')},%20sou%20da%20Prosperus%20Inteligência%20Financeira!` : '#';
+        const rawPhone = lead.telefone || lead.whatsapp || '';
+        const cleanPhone = rawPhone.replace(/\D/g, '');
+        const formattedWaPhone = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
+        const waMessage = encodeURIComponent(`Olá ${lead.nome || ''}, vi seu diagnóstico no Check-up Financeiro Prosperus! Como posso te ajudar hoje?`);
+        const waLink = cleanPhone ? `https://wa.me/${formattedWaPhone}?text=${waMessage}` : '#';
 
-        const isAltaRenda = (lead.faixa_renda || '').includes('10.000');
+        const rendaStr = lead.faixa_renda || (lead.respostas && lead.respostas.renda) || '-';
+        const isAltaRenda = rendaStr.includes('10.000');
         const rendaBadgeClass = isAltaRenda 
           ? 'bg-[#C59B27]/15 text-[#8c6b12] border-[#C59B27]/30 font-bold' 
           : 'bg-emerald-50 text-emerald-800 border-emerald-200';
+
+        const dateStr = lead.created_at 
+          ? new Date(lead.created_at).toLocaleString('pt-BR') 
+          : (lead.data_registro || '-');
 
         const tr = document.createElement('tr');
         tr.className = 'hover:bg-gray-50/80 transition border-b border-gray-100 text-[#062E20]';
         
         tr.innerHTML = `
           <td class="py-3.5 px-4 text-xs font-semibold text-gray-500 whitespace-nowrap">
-            ${lead.data_registro || '-'}
+            ${dateStr}
           </td>
           <td class="py-3.5 px-4 font-bold text-[#062E20]">
             ${lead.nome || 'Não informado'}
           </td>
           <td class="py-3.5 px-4 text-xs font-mono font-bold text-[#062E20] whitespace-nowrap">
-            ${lead.cpf_cnpj || lead.documento || '-'}
+            ${lead.email || lead.cpf_cnpj || lead.documento || '-'}
           </td>
           <td class="py-3.5 px-4 whitespace-nowrap">
             <a href="${waLink}" target="_blank" rel="noopener" 
               class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 font-semibold text-xs border border-emerald-200 hover:bg-emerald-600 hover:text-white transition">
               <i class="fa-brands fa-whatsapp text-sm"></i>
-              <span>${lead.whatsapp || 'Indisponível'}</span>
+              <span>${rawPhone || 'Indisponível'}</span>
             </a>
           </td>
           <td class="py-3.5 px-4 whitespace-nowrap">
             <span class="inline-block px-2.5 py-1 rounded-full text-xs border ${rendaBadgeClass}">
-              ${lead.faixa_renda || '-'}
+              ${rendaStr}
             </span>
           </td>
           <td class="py-3.5 px-4 text-xs">
-            ${lead.capacidade_pagamento || '-'}
+            ${lead.capacidade_pagamento || (lead.respostas && lead.respostas.capacidade) || '-'}
           </td>
           <td class="py-3.5 px-4 text-xs whitespace-nowrap">
             <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-gray-100 text-gray-700">
-              ${lead.monitoramento_cpf || '-'}
+              ${lead.monitoramento_cpf || (lead.respostas && lead.respostas.monitoramento_cpf) || '-'}
             </span>
           </td>
           <td class="py-3.5 px-4 text-xs">
-            ${lead.relacionamento_bancario || '-'}
+            ${lead.relacionamento_bancario || (lead.respostas && lead.respostas.bancos) || '-'}
           </td>
           <td class="py-3.5 px-4 text-center whitespace-nowrap">
-            <a href="${waLink}" target="_blank" rel="noopener" title="Abrir conversa no WhatsApp"
-              class="w-8 h-8 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white inline-flex items-center justify-center shadow-sm transition">
-              <i class="fa-brands fa-whatsapp"></i>
+            <a href="${waLink}" target="_blank" rel="noopener" title="Chamar no WhatsApp"
+              class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs inline-flex items-center gap-1.5 shadow-sm transition">
+              <i class="fa-brands fa-whatsapp text-sm"></i>
+              <span>Chamar no WhatsApp</span>
             </a>
           </td>
         `;
@@ -533,7 +558,7 @@
     function copyAllContacts() {
       if (allLeads.length === 0) return alert('Nenhum lead disponível para copiar.');
 
-      const textList = allLeads.map(l => `${l.nome || 'Lead'} - Doc: ${l.cpf_cnpj || l.documento || 's/doc'} - ${l.whatsapp || ''}`).join('\n');
+      const textList = allLeads.map(l => `${l.nome || 'Lead'} - ${l.whatsapp || ''}`).join('\n');
       navigator.clipboard.writeText(textList).then(() => {
         const btnText = document.getElementById('copyBtnText');
         btnText.innerText = 'Copiado para Área de Transferência!';

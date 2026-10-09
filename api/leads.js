@@ -14,8 +14,8 @@ let leadsStore = [
 ];
 
 function getSupabaseClient() {
-  const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+  const key = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
   if (url && key && url !== 'https://seu-projeto.supabase.co' && !url.includes('COLE_SUA_URL')) {
     try {
       return createClient(url, key);
@@ -57,8 +57,29 @@ module.exports = async (req, res) => {
 
       console.log('📊 [PROSPERUS LEAD CAPTURED]:', leadRecord);
 
-      // Tenta salvar na tabela 'leads' do Supabase
+      // Tenta salvar nas tabelas 'quiz_leads' e 'leads' do Supabase
       if (supabase) {
+        // 1. Tabela quiz_leads (com respostas JSONB)
+        try {
+          const quizLeadRecord = {
+            nome: lead.nome || '',
+            telefone: lead.whatsapp || lead.telefone || '',
+            email: lead.email || lead.cpf_cnpj || '',
+            respostas: {
+              renda: lead.faixa_renda || '',
+              capacidade: lead.capacidade_pagamento || '',
+              monitoramento_cpf: lead.monitoramento_cpf || '',
+              bancos: lead.relacionamento_bancario || '',
+              cpf_cnpj: lead.cpf_cnpj || lead.documento || '',
+              origem_url: lead.origem_url || ''
+            }
+          };
+          await supabase.from('quiz_leads').insert([quizLeadRecord]);
+        } catch (qErr) {
+          console.warn('⚠️ Supabase quiz_leads insert info:', qErr.message);
+        }
+
+        // 2. Tabela leads (campos simples)
         try {
           const { data, error } = await supabase
             .from('leads')
@@ -104,12 +125,23 @@ module.exports = async (req, res) => {
 
   if (supabase) {
     try {
-      const { data, error } = await supabase
-        .from('leads')
+      let { data, error } = await supabase
+        .from('quiz_leads')
         .select('*')
-        .order('id', { ascending: false });
+        .order('created_at', { ascending: false });
 
-      if (!error && Array.isArray(data) && data.length > 0) {
+      if (error || !data || data.length === 0) {
+        const fallback = await supabase
+          .from('leads')
+          .select('*')
+          .order('id', { ascending: false });
+
+        if (!fallback.error && Array.isArray(fallback.data) && fallback.data.length > 0) {
+          data = fallback.data;
+        }
+      }
+
+      if (Array.isArray(data) && data.length > 0) {
         currentLeads = data;
       }
     } catch (err) {
@@ -119,17 +151,17 @@ module.exports = async (req, res) => {
 
   const urlParams = new URLSearchParams(req.url.split('?')[1] || '');
   if (urlParams.get('format') === 'csv') {
-    let csvContent = '\uFEFF"Data e Hora";"Nome Completo";"WhatsApp";"Faixa de Renda";"Capacidade Mensal de Pagamento";"Acompanha CPF/Score?";"Quantidade de Bancos";"CPF/CNPJ";"Página de Origem"\n';
+    let csvContent = '\uFEFF"Data e Hora";"Nome Completo";"WhatsApp/Telefone";"Faixa de Renda";"Capacidade Mensal de Pagamento";"Acompanha CPF/Score?";"Quantidade de Bancos";"CPF/CNPJ";"Página de Origem"\n';
     currentLeads.forEach(item => {
       const row = [
-        `"${item.data_registro || ''}"`,
+        `"${item.created_at ? new Date(item.created_at).toLocaleString('pt-BR') : item.data_registro || ''}"`,
         `"${(item.nome || '').replace(/"/g, '""')}"`,
-        `"${(item.whatsapp || '').replace(/"/g, '""')}"`,
-        `"${(item.faixa_renda || '').replace(/"/g, '""')}"`,
-        `"${(item.capacidade_pagamento || '').replace(/"/g, '""')}"`,
-        `"${(item.monitoramento_cpf || '').replace(/"/g, '""')}"`,
-        `"${(item.relacionamento_bancario || '').replace(/"/g, '""')}"`,
-        `"${(item.cpf_cnpj || item.documento || '').replace(/"/g, '""')}"`,
+        `"${(item.telefone || item.whatsapp || '').replace(/"/g, '""')}"`,
+        `"${(item.faixa_renda || (item.respostas && item.respostas.renda) || '').replace(/"/g, '""')}"`,
+        `"${(item.capacidade_pagamento || (item.respostas && item.respostas.capacidade) || '').replace(/"/g, '""')}"`,
+        `"${(item.monitoramento_cpf || (item.respostas && item.respostas.monitoramento_cpf) || '').replace(/"/g, '""')}"`,
+        `"${(item.relacionamento_bancario || (item.respostas && item.respostas.bancos) || '').replace(/"/g, '""')}"`,
+        `"${(item.cpf_cnpj || item.documento || (item.respostas && item.respostas.cpf_cnpj) || '').replace(/"/g, '""')}"`,
         `"${(item.origem_url || '').replace(/"/g, '""')}"`
       ].join(';');
       csvContent += row + '\n';
